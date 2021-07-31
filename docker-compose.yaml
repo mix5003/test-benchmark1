@@ -24,6 +24,11 @@ services:
         ports:
         - 3000
 
+    octane:
+        build: ./octane
+        ports:
+        - 3000
+
     dotnet:
         build: ./dotnet
         ports:
