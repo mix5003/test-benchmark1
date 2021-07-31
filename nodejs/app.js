@@ -16,23 +16,26 @@ const server = http.createServer((req, res) => {
     res.setHeader('Content-Type', 'text/plain');
 
     const url = new URL(req.url, `http://${req.headers.host}`);
-
     switch(url.pathname){
         case '/hello':
             res.end('Hello World!');
             return;
-        case '/fibo1':
-            res.end('' + fibo1(url.searchParams.number || 0));
+        case '/fibo1': {
+            const param = new URLSearchParams(url.search);
+            res.end('' + fibo1(param.get('number') || 0));
             return;
-        case '/fibo2':
+        }
+        case '/fibo2': {
+            const param = new URLSearchParams(url.search);
+            const number = param.get('number');
             let result = 0;
 
-            if(url.searchParams.number <= 0) {
+            if(number <= 0) {
                 result = 0;
-            }else if(url.searchParams.number < 2) {
+            }else if(number < 2) {
                 result = 1;
             }else{
-                let count = url.searchParams.number || 0;
+                let count = number || 0;
                 let i, num1 = 0, num2 = 1;
                 for (i = 2; i <= count; i++) {
                     result = num1 + num2;
@@ -44,6 +47,7 @@ const server = http.createServer((req, res) => {
         
             res.end('' + result)
             return;
+        }
         case '/io':
             (async _ => {
                 const apiRequest = await fetch("http://nginx/index.html");

@@ -32,16 +32,16 @@ $server->on("Request", function(Request $request, Response $response)
             $response->end("Hello World!");
             return;
         case '/fibo1': 
-            $response->end(fibo1($_GET['number']));
+            $response->end(fibo1($request->get['number']));
             return;
         case '/fibo2':
             $result = 0;
-            if($_GET['number'] <= 0){
+            if($request->get['number'] <= 0){
                 $result = 0;
-            }elseif($_GET['number'] <= 2){
+            }elseif($request->get['number'] <= 2){
                 $result = 1;
             }else{
-                $count = $_GET['number'];
+                $count = $request->get['number'];
                 $num1 = 0;
                 $num2 = 1;
     

@@ -2,6 +2,10 @@ FROM phpswoole/swoole:4.7-php8.0-alpine
 
 RUN docker-php-ext-configure pcntl --enable-pcntl && docker-php-ext-install pcntl
 
+# basic laravel requirement
+RUN docker-php-ext-configure bcmath && docker-php-ext-install bcmath 
+
+RUN docker-php-ext-install opcache
 
 COPY composer.json composer.lock /var/www/
 RUN composer install --no-dev --no-scripts
