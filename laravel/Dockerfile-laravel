@@ -1,0 +1,35 @@
+FROM php:8.0.9-apache
+
+RUN sed -i "s/html/public/g" /etc/apache2/sites-enabled/000-default.conf && \
+    sed -i "s/*:80/*:3000/g" /etc/apache2/sites-enabled/000-default.conf && \
+    sed -i "s/Listen 80/Listen 3000/" /etc/apache2/ports.conf && \
+    echo "FallbackResource /index.php" >> /etc/apache2/apache2.conf
+
+RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
+    && php composer-setup.php \
+    && php -r "unlink('composer-setup.php');" \
+    && mv composer.phar /bin/composer
+
+RUN apt-get update -y \
+    && apt-get install -y git libzip-dev libxml2-dev \
+    && docker-php-ext-configure bcmath \
+    && docker-php-ext-install zip xml bcmath opcache
+
+WORKDIR /var/www
+
+COPY composer.json composer.lock /var/www/
+
+RUN composer install --no-dev --no-scripts
+
+COPY . /var/www
+
+RUN composer dump-autoload -o
+
+ENV APP_NAME=Laravel
+ENV APP_ENV=production
+ENV APP_DEBUG=false
+ENV APP_KEY="base64:Ish0RPC6AmMBqcE47DksWJfyy9AXWey22F3ndGetLTg="
+
+RUN php artisan config:cache && php artisan route:cache
+
+EXPOSE 3000

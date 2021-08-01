@@ -29,8 +29,17 @@ services:
         ports:
         - 3000
 
+    laravel:
+        build:
+            context: ./laravel
+            dockerfile: Dockerfile-laravel
+        ports:
+        - 3000
+
     octane:
-        build: ./octane
+        build:
+            context: ./laravel
+            dockerfile: Dockerfile-octane
         ports:
         - 3000
 
